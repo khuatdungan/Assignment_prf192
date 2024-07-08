@@ -28,7 +28,14 @@ void inputSIM(SIM *sim) {
     scanf("%f", &sim->price);
 }
 
-
+void displaySIM(SIM sim) {
+    printf("CCCD: %s\n", sim.cccd);
+    printf("Ho: %s\n", sim.lastName);
+    printf("Ten: %s\n", sim.firstName);
+    printf("Nha mang: %s\n", sim.network);
+    printf("So dien thoai: %s\n", sim.phoneNumber);
+    printf("Gia tien: %.2f\n", sim.price);
+}
 
 
 
