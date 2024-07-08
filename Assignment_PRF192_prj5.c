@@ -13,7 +13,20 @@ typedef struct {
     float price;
 } SIM;
 
-
+void inputSIM(SIM *sim) {
+    printf("Nhap so CCCD: ");
+    scanf("%s", sim->cccd);
+    printf("Nhap ho chu sim: ");
+    scanf("%s", sim->lastName);
+    printf("Nhap ten chu sim: ");
+    scanf("%s", sim->firstName);
+    printf("Nhap nha mang: ");
+    scanf("%s", sim->network);
+    printf("Nhap so dien thoai: ");
+    scanf("%s", sim->phoneNumber);
+    printf("Nhap gia tien: ");
+    scanf("%f", &sim->price);
+}
 
 
 
