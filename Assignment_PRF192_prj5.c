@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-// ***** dinh nghia bien SIM *****
 typedef struct {
     char cccd[20];
     char lastName[50];
@@ -52,17 +50,55 @@ void loadSIMsFromFile(SIM sims[], int *count) {
 void saveSIMsToFile(SIM sims[], int count) {
     FILE *file = fopen("sim_database.txt", "w");
     int i;
-    for ( i = 0; i < count; i++) {
+	for (i = 0; i < count; i++) {
         fprintf(file, "%s,%s,%s,%s,%s,%.2f\n", sims[i].cccd, sims[i].lastName, sims[i].firstName, sims[i].network, sims[i].phoneNumber, sims[i].price);
     }
     fclose(file);
 }
 
+void updatePrice(SIM sims[], int count, char phoneNumber[], float newPrice) {
+    int i;
+	for ( i = 0; i < count; i++) {
+        if (strcmp(sims[i].phoneNumber, phoneNumber) == 0) {
+            sims[i].price = newPrice;
+            printf("Cap nhat gia tien thanh cong.\n");
+            return;
+        }
+    }
+    printf("Khong tim thay so dien thoai.\n");
+}
 
+void updateOwner(SIM sims[], int count, char phoneNumber[], char newLastName[], char newFirstName[]) {
+    int i;
+	for (i = 0; i < count; i++) {
+        if (strcmp(sims[i].phoneNumber, phoneNumber) == 0) {
+            strcpy(sims[i].lastName, newLastName);
+            strcpy(sims[i].firstName, newFirstName);
+            printf("Cap nhat thong tin chu sim thanh cong.\n");
+            return;
+        }
+    }
+    printf("Khong tim thay so dien thoai.\n");
+}
+
+void deleteSIM(SIM sims[], int *count, char phoneNumber[]) {
+    int i,j;
+	for (i = 0; i < *count; i++) {
+        if (strcmp(sims[i].phoneNumber, phoneNumber) == 0) {
+            for (j = i; j < *count - 1; j++) {
+                sims[j] = sims[j + 1];
+            }
+            (*count)--;
+            printf("Xoa thong tin sim thanh cong.\n");
+            return;
+        }
+    }
+    printf("Khong tim thay so dien thoai.\n");
+}
 
 void sortSIMByPhoneNumber(SIM sims[], int count, int ascending) {
-	int i,j;
-    for (i = 0; i < count - 1; i++) {
+    int i,j;
+	for (i = 0; i < count - 1; i++) {
         for ( j = i + 1; j < count; j++) {
             if ((ascending && strcmp(sims[i].phoneNumber, sims[j].phoneNumber) > 0) ||
                 (!ascending && strcmp(sims[i].phoneNumber, sims[j].phoneNumber) < 0)) {
@@ -75,8 +111,8 @@ void sortSIMByPhoneNumber(SIM sims[], int count, int ascending) {
 }
 
 void sortSIMByPrice(SIM sims[], int count, int ascending) {
-	int i,j;
-    for ( i = 0; i < count - 1; i++) {
+    int i,j;
+	for (i = 0; i < count - 1; i++) {
         for ( j = i + 1; j < count; j++) {
             if ((ascending && sims[i].price > sims[j].price) ||
                 (!ascending && sims[i].price < sims[j].price)) {
@@ -88,11 +124,164 @@ void sortSIMByPrice(SIM sims[], int count, int ascending) {
     }
 }
 
-
-
-
-int main()
-{
-
-	return 0;
+void displayAllSIMs(SIM sims[], int count) {
+    int i;
+	for (i = 0; i < count; i++) {
+        displaySIM(sims[i]);
+        printf("\n");
+    }
 }
+
+void displaySIMsByPhoneNumber(SIM sims[], int count, char phoneNumber[]) {
+    int i;
+	for (i = 0; i < count; i++) {
+        if (strcmp(sims[i].phoneNumber, phoneNumber) == 0) {
+            displaySIM(sims[i]);
+            return;
+        }
+    }
+    printf("Khong tim thay so dien thoai.\n");
+}
+
+void displaySIMsByPriceRange(SIM sims[], int count, float minPrice, float maxPrice) {
+    int i;
+	for (i = 0; i < count; i++) {
+        if (sims[i].price >= minPrice && sims[i].price <= maxPrice) {
+            displaySIM(sims[i]);
+            printf("\n");
+        }
+    }
+}
+
+void displayPriceStats(SIM sims[], int count) {
+    if (count == 0) {
+        printf("Khong co thong tin sim nao.\n");
+        return;
+    }
+
+    float totalPrice = 0;
+    float maxPrice = sims[0].price;
+    float minPrice = sims[0].price;
+
+    int i;
+	for (i = 0; i < count; i++) {
+        totalPrice += sims[i].price;
+        if (sims[i].price > maxPrice) {
+            maxPrice = sims[i].price;
+        }
+        if (sims[i].price < minPrice) {
+            minPrice = sims[i].price;
+        }
+    }
+
+    float averagePrice = totalPrice / count;
+    printf("Gia tien trung binh: %.2f\n", averagePrice);
+    printf("Gia tien cao nhat: %.2f\n", maxPrice);
+    printf("Gia tien thap nhat: %.2f\n", minPrice);
+}
+
+int main() {
+    SIM sims[100];
+    int count = 0;
+    int choice;
+
+    // Load data from file at the beginning
+    loadSIMsFromFile(sims, &count);
+
+    do {
+        printf("Menu:\n");
+        printf("1. Nhap thong tin Sim\n");
+        printf("2. Sua thong tin Gia tien cua sim (tim theo So dien thoai)\n");
+        printf("3. Sua thong tin Ho va Ten chu sim (tim theo So dien thoai)\n");
+        printf("4. Xoa thong tin (tim theo So dien thoai)\n");
+        printf("5. Sap xep danh sach giam dan theo So dien thoai\n");
+        printf("6. Sap xep danh sach tang dan theo Gia tien\n");
+        printf("7. Xuat toan bo danh sach\n");
+        printf("8. Xuat danh sach theo So dien thoai\n");
+        printf("9. Xuat danh sach theo Gia tien trong khoang nao do\n");
+        printf("10. Xuat Gia tien trung binh, Gia tien cao nhat, Gia tien thap nhat\n");
+        printf("0. Thoat\n");
+        printf("Lua chon cua ban: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                inputSIM(&sims[count]);
+                count++;
+                break;
+            case 2: {
+                char phoneNumber[15];
+                float newPrice;
+                printf("Nhap so dien thoai: ");
+                scanf("%s", phoneNumber);
+                printf("Nhap gia tien moi: ");
+                scanf("%f", &newPrice);
+                updatePrice(sims, count, phoneNumber, newPrice);
+                break;
+            }
+            case 3: {
+                char phoneNumber[15];
+                char newLastName[50];
+                char newFirstName[50];
+                printf("Nhap so dien thoai: ");
+                scanf("%s", phoneNumber);
+				printf("Nhap ho moi: ");
+                scanf("%s", newLastName);
+                printf("Nhap ten moi: ");
+                scanf("%s", newFirstName);
+                updateOwner(sims, count, phoneNumber, newLastName, newFirstName);
+                break;
+            }
+            case 4: {
+                char phoneNumber[15];
+                printf("Nhap so dien thoai: ");
+                scanf("%s", phoneNumber);
+                deleteSIM(sims, &count, phoneNumber);
+                break;
+            }
+            case 5:
+                sortSIMByPhoneNumber(sims, count, 0);
+                printf("Sap xep danh sach giam dan theo So dien thoai thanh cong.\n");
+                break;
+            case 6:
+                sortSIMByPrice(sims, count, 1);
+                printf("Sap xep danh sach tang dan theo Gia tien thanh cong.\n");
+                break;
+            case 7:
+                displayAllSIMs(sims, count);
+                break;
+            case 8: {
+                char phoneNumber[15];
+                printf("Nhap so dien thoai: ");
+                scanf("%s", phoneNumber);
+                displaySIMsByPhoneNumber(sims, count, phoneNumber);
+                break;
+            }
+            case 9: {
+                float minPrice, maxPrice;
+                printf("Nhap gia tien thap nhat: ");
+                scanf("%f", &minPrice);
+                printf("Nhap gia tien cao nhat: ");
+                scanf("%f", &maxPrice);
+                displaySIMsByPriceRange(sims, count, minPrice, maxPrice);
+                break;
+            }
+            case 10:
+                displayPriceStats(sims, count);
+                break;
+            case 0:
+                printf("Thoat chuong trinh.\n");
+                break;
+            default:
+                printf("Lua chon khong hop le. Vui long chon lai.\n");
+        }
+
+        // Save data to file after every change
+        saveSIMsToFile(sims, count);
+
+    } while (choice != 0);
+
+    return 0;
+}
+
+
