@@ -10,14 +10,50 @@ typedef struct {
     char phoneNumber[15];
     float price;
 } SIM;
-
+char* lTrim (char s[]){
+	int i=0;
+	while (s[i]==' ') i++;
+	if(i>0) strcpy(&s[0], &s[i]);//     khuat dung an
+	return s;
+}
+char* rTrim (char s[]){
+	int i=strlen(s)-1;
+	while (s[i]==' ') i--;// khuat dung an       .
+	s[i+1]='\0';
+	return s;
+}
+char* trim (char s[]){
+	rTrim(lTrim(s));
+	char *ptr = strstr(s,"  ");
+	while (ptr!=NULL) {
+		strcpy(ptr,ptr+1);
+		
+		ptr = strstr(s,"  ");
+	}
+	return s;  // khuat      dung     an 
+}
+char* nameStr(char s[]){
+	trim(s);
+	strlwr(s);
+	int L = strlen(s);
+	int i;
+	for (i=0;i<L;i++){
+		if (i==0 || (i>0 && s[i-1]==' ')){ // Khuat Dung An
+			s[i] = toupper (s[i]);
+		}
+	
+	}
+	return s;
+}
 void inputSIM(SIM *sim) {
     printf("Nhap so CCCD: ");
     scanf("%s", sim->cccd);
     printf("Nhap ho chu sim: ");
     scanf("%s", sim->lastName);
+    //trim(sim.lastName);
     printf("Nhap ten chu sim: ");
     scanf("%s", sim->firstName);
+    //trim(sim.firstName);
     printf("Nhap nha mang: ");
     scanf("%s", sim->network);
     printf("Nhap so dien thoai: ");
@@ -35,6 +71,18 @@ void displaySIM(SIM sim) {
     printf("Gia tien: %.2f\n", sim.price);
 }
 
+void loadSIMsFromCSV(SIM sims[], int *count) {
+    FILE *file = fopen("sim_database.csv", "r");
+    if (file == NULL) {
+        *count = 0;
+        return;
+    }
+    while (fscanf(file, "%[^,],%[^,],%[^,],%[^,],%[^,],%f\n", sims[*count].cccd, sims[*count].lastName, sims[*count].firstName, sims[*count].network, sims[*count].phoneNumber, &sims[*count].price) != EOF) {
+        (*count)++;
+    }
+    fclose(file);
+}
+
 void loadSIMsFromFile(SIM sims[], int *count) {
     FILE *file = fopen("sim_database.txt", "r");
     if (file == NULL) {
@@ -48,13 +96,22 @@ void loadSIMsFromFile(SIM sims[], int *count) {
 }
 
 void saveSIMsToFile(SIM sims[], int count) {
-    FILE *file = fopen("sim_database.txt", "w");
+    FILE *file = fopen("sim_database.csv", "w");
     int i;
 	for (i = 0; i < count; i++) {
         fprintf(file, "%s,%s,%s,%s,%s,%.2f\n", sims[i].cccd, sims[i].lastName, sims[i].firstName, sims[i].network, sims[i].phoneNumber, sims[i].price);
     }
     fclose(file);
 }
+void saveSIMsToCSV(SIM sims[], int count) {
+    FILE *file = fopen("sim_database.csv", "w");
+    int i;
+    for ( i = 0; i < count; i++) {
+        fprintf(file, "%s,%s,%s,%s,%s,%.2f\n", sims[i].cccd, sims[i].lastName, sims[i].firstName, sims[i].network, sims[i].phoneNumber, sims[i].price);
+    }
+    fclose(file);
+}
+
 
 void updatePrice(SIM sims[], int count, char phoneNumber[], float newPrice) {
     int i;
@@ -186,7 +243,7 @@ int main() {
     int choice;
 
     // Load data from file at the beginning
-    loadSIMsFromFile(sims, &count);
+    loadSIMsFromCSV(sims, &count);
 
     do {
         printf("==========================================   MENU:   ==========================================\n");
@@ -288,7 +345,7 @@ int main() {
         }
 
         // Save data to file after every change
-        saveSIMsToFile(sims, count);
+        saveSIMsToCSV(sims, count);
 
     } while (choice != 0);
 
