@@ -189,18 +189,29 @@ int main() {
     loadSIMsFromFile(sims, &count);
 
     do {
-        printf("Menu:\n");
-        printf("1. Nhap thong tin Sim\n");
-        printf("2. Sua thong tin Gia tien cua sim (tim theo So dien thoai)\n");
-        printf("3. Sua thong tin Ho va Ten chu sim (tim theo So dien thoai)\n");
-        printf("4. Xoa thong tin (tim theo So dien thoai)\n");
-        printf("5. Sap xep danh sach giam dan theo So dien thoai\n");
-        printf("6. Sap xep danh sach tang dan theo Gia tien\n");
-        printf("7. Xuat toan bo danh sach\n");
-        printf("8. Xuat danh sach theo So dien thoai\n");
-        printf("9. Xuat danh sach theo Gia tien trong khoang nao do\n");
-        printf("10. Xuat Gia tien trung binh, Gia tien cao nhat, Gia tien thap nhat\n");
-        printf("0. Thoat\n");
+        printf("==========================================   MENU:   ==========================================\n");
+        printf("||      1. Nhap thong tin Sim                                                                ||\n");
+        printf("||-------------------------------------------------------------------------------------------||\n");
+        printf("||      2. Sua thong tin Gia tien cua sim (tim theo So dien thoai)                           ||\n");
+        printf("||-------------------------------------------------------------------------------------------||\n");
+        printf("||      3. Sua thong tin Ho va Ten chu sim (tim theo So dien thoai)                          ||\n");
+        printf("||-------------------------------------------------------------------------------------------||\n");
+        printf("||      4. Xoa thong tin (tim theo So dien thoai)                                            ||\n");
+        printf("||-------------------------------------------------------------------------------------------||\n");
+        printf("||      5. Sap xep danh sach giam dan theo So dien thoai                                     ||\n");
+        printf("||-------------------------------------------------------------------------------------------||\n");
+        printf("||      6. Sap xep danh sach tang dan theo Gia tien                                          ||\n");
+        printf("||-------------------------------------------------------------------------------------------||\n");
+        printf("||      7. Xuat toan bo danh sach                                                            ||\n");
+        printf("||-------------------------------------------------------------------------------------------||\n");
+        printf("||      8. Xuat danh sach theo So dien thoai                                                 ||\n");
+        printf("||-------------------------------------------------------------------------------------------||\n");
+        printf("||      9. Xuat danh sach theo Gia tien trong khoang nao do                                  ||\n");
+        printf("||-------------------------------------------------------------------------------------------||\n");
+        printf("||      10. Xuat Gia tien trung binh, Gia tien cao nhat, Gia tien thap nhat                  ||\n");
+        printf("||-------------------------------------------------------------------------------------------||\n");
+        printf("||      0. Thoat                                                                             ||\n");
+        printf("===============================================================================================\n");
         printf("Lua chon cua ban: ");
         scanf("%d", &choice);
 
