@@ -12,25 +12,46 @@ typedef struct {
 } SIM;
 
 int i, j;
-// a
-void inputString(char* prompt, char* str, int size) { // 
-    printf("%s", prompt);
-    fgets(str, size, stdin);
-    str[strcspn(str, "\n")] = '\0'; 
+
+void inputString(char* prompt, char* str, int size) { 
+    do {
+        printf("%s", prompt);
+        fgets(str, size, stdin);
+        str[strcspn(str, "\n")] = '\0';
+        if (strlen(str) == 0) {
+            printf("Khong duoc de trong. Vui long nhap lai.\n");
+        }
+    } while (strlen(str) == 0);
 }
-// a
-void inputSIM(SIM *sim) {
+
+
+int simExists(SIM sims[], int count, char phoneNumber[]) {
+    for (i = 0; i < count; i++) {
+        if (strcmp(sims[i].phoneNumber, phoneNumber) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void inputSIM(SIM *sim, SIM sims[], int count) {
+    do {
+        inputString("Nhap so dien thoai: ", sim->phoneNumber, 15);
+        if (simExists(sims, count, sim->phoneNumber)) {
+            printf("So dien thoai da ton tai. Vui long nhap lai.\n");
+        }
+    } while (simExists(sims, count, sim->phoneNumber));
+    
     inputString("Nhap so CCCD: ", sim->cccd, 20);
     inputString("Nhap ho chu sim: ", sim->lastName, 50);
     inputString("Nhap ten chu sim: ", sim->firstName, 50);
     inputString("Nhap nha mang: ", sim->network, 50);
-    inputString("Nhap so dien thoai: ", sim->phoneNumber, 15);
     printf("Nhap gia tien: ");
     scanf("%f", &sim->price);
-    getchar(); 
+    getchar();
 }
-// a
-void displaySIM(SIM sim) { 
+
+void displaySIM(SIM sim) {
     printf("CCCD: %s\n", sim.cccd);
     printf("Ho: %s\n", sim.lastName);
     printf("Ten: %s\n", sim.firstName);
@@ -38,7 +59,7 @@ void displaySIM(SIM sim) {
     printf("So dien thoai: %s\n", sim.phoneNumber);
     printf("Gia tien: %.2f\n", sim.price);
 }
-// a
+
 void loadSIMsFromCSV(SIM sims[], int *count) {
     FILE *file = fopen("sim_database.csv", "r");
     if (file == NULL) {
@@ -50,7 +71,7 @@ void loadSIMsFromCSV(SIM sims[], int *count) {
     }
     fclose(file);
 }
-//a
+
 void saveSIMsToCSV(SIM sims[], int count) {
     FILE *file = fopen("sim_database.csv", "w");
     for (i = 0; i < count; i++) {
@@ -58,7 +79,7 @@ void saveSIMsToCSV(SIM sims[], int count) {
     }
     fclose(file);
 }
-//h
+
 void updatePrice(SIM sims[], int count, char phoneNumber[], float newPrice) {
     for (i = 0; i < count; i++) {
         if (strcmp(sims[i].phoneNumber, phoneNumber) == 0) {
@@ -69,7 +90,7 @@ void updatePrice(SIM sims[], int count, char phoneNumber[], float newPrice) {
     }
     printf("Khong tim thay so dien thoai.\n");
 }
-//h
+
 void updateOwner(SIM sims[], int count, char phoneNumber[], char newLastName[], char newFirstName[]) {
     for (i = 0; i < count; i++) {
         if (strcmp(sims[i].phoneNumber, phoneNumber) == 0) {
@@ -81,7 +102,7 @@ void updateOwner(SIM sims[], int count, char phoneNumber[], char newLastName[], 
     }
     printf("Khong tim thay so dien thoai.\n");
 }
-//h
+
 void deleteSIM(SIM sims[], int *count, char phoneNumber[]) {
     for (i = 0; i < *count; i++) {
         if (strcmp(sims[i].phoneNumber, phoneNumber) == 0) {
@@ -95,8 +116,8 @@ void deleteSIM(SIM sims[], int *count, char phoneNumber[]) {
     }
     printf("Khong tim thay so dien thoai.\n");
 }
-//t
-void sortSIMByPhoneNumber(SIM sims[], int count, int ascending){
+
+void sortSIMByPhoneNumber(SIM sims[], int count, int ascending) {
     for (i = 0; i < count - 1; i++) {
         for (j = i + 1; j < count; j++) {
             if ((ascending && strcmp(sims[i].phoneNumber, sims[j].phoneNumber) > 0) ||
@@ -108,7 +129,7 @@ void sortSIMByPhoneNumber(SIM sims[], int count, int ascending){
         }
     }
 }
-//t
+
 void sortSIMByPrice(SIM sims[], int count, int ascending) {
     for (i = 0; i < count - 1; i++) {
         for (j = i + 1; j < count; j++) {
@@ -121,14 +142,14 @@ void sortSIMByPrice(SIM sims[], int count, int ascending) {
         }
     }
 }
-//t
+
 void displayAllSIMs(SIM sims[], int count) {
     for (i = 0; i < count; i++) {
         displaySIM(sims[i]);
         printf("\n");
     }
 }
-//t
+
 void displaySIMsByPhoneNumber(SIM sims[], int count, char phoneNumber[]) {
     for (i = 0; i < count; i++) {
         if (strcmp(sims[i].phoneNumber, phoneNumber) == 0) {
@@ -138,7 +159,7 @@ void displaySIMsByPhoneNumber(SIM sims[], int count, char phoneNumber[]) {
     }
     printf("Khong tim thay so dien thoai.\n");
 }
-//t
+
 void displaySIMsByPriceRange(SIM sims[], int count, float minPrice, float maxPrice) {
     for (i = 0; i < count; i++) {
         if (sims[i].price >= minPrice && sims[i].price <= maxPrice) {
@@ -147,8 +168,8 @@ void displaySIMsByPriceRange(SIM sims[], int count, float minPrice, float maxPri
         }
     }
 }
-//t
-void displayPriceStats(SIM sims[], int count) { //t
+
+void displayPriceStats(SIM sims[], int count) {
     if (count == 0) {
         printf("Khong co thong tin sim nao.\n");
         return;
@@ -173,13 +194,12 @@ void displayPriceStats(SIM sims[], int count) { //t
     printf("Gia tien cao nhat: %.2f\n", maxPrice);
     printf("Gia tien thap nhat: %.2f\n", minPrice);
 }
-//h
+
 int main() {
     SIM sims[100];
     int count = 0;
     int choice;
 
-    
     loadSIMsFromCSV(sims, &count);
 
     do {
@@ -196,7 +216,7 @@ int main() {
         printf("||-------------------------------------------------------------------------------------------||\n");
         printf("||      6. Sap xep danh sach tang dan theo Gia tien                                          ||\n");
         printf("||-------------------------------------------------------------------------------------------||\n");
-        printf("||      7. Xuat toan bo danh sach                                                            ||\n");
+        printf("||       7. Xuat toan bo danh sach                                                           ||\n");
         printf("||-------------------------------------------------------------------------------------------||\n");
         printf("||      8. Xuat danh sach theo So dien thoai                                                 ||\n");
         printf("||-------------------------------------------------------------------------------------------||\n");
@@ -208,11 +228,11 @@ int main() {
         printf("===============================================================================================\n");
         printf("Lua chon cua ban: ");
         scanf("%d", &choice);
-        getchar(); 
+        getchar();
 
         switch (choice) {
             case 1:
-                inputSIM(&sims[count]);
+                inputSIM(&sims[count], sims, count);
                 count++;
                 break;
             case 2: {
@@ -221,7 +241,7 @@ int main() {
                 inputString("Nhap so dien thoai: ", phoneNumber, 15);
                 printf("Nhap gia tien moi: ");
                 scanf("%f", &newPrice);
-                getchar(); 
+                getchar();
                 updatePrice(sims, count, phoneNumber, newPrice);
                 break;
             }
